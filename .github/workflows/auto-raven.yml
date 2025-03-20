@@ -29,15 +29,18 @@ jobs:
       run: |
         touch AutoRaven.md commit_log.txt  # Ensure both files exist
 
+    - name: Pull latest changes
+      run: |
+        git fetch origin
+        git reset --hard origin/main
+
     - name: Generate Random Commits
       run: |
-        # Function to generate random commit times
         generate_random_commits() {
           num_commits=$((RANDOM % 5 + 4))  # Pick between 4 to 8 commits
           echo "Generating $num_commits random commit times..." >> commit_log.txt
           
           for i in $(seq 1 $num_commits); do
-            # Generate a random time between 0 and 24 hours (86400 seconds)
             sleep_time=$((RANDOM % 86400))  # Random seconds in 24 hours
             echo "Sleeping for $sleep_time seconds..." >> commit_log.txt
             sleep $sleep_time  # Wait until the random time
@@ -48,9 +51,9 @@ jobs:
             
             git add AutoRaven.md commit_log.txt
             git commit -m "Automated commit at $DATE (Dhaka Time)" || exit 0
-            git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} main
+            git pull --rebase origin main
+            git push --force-with-lease https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} main
           done
         }
 
-        # Call the function to generate random commits
         generate_random_commits
