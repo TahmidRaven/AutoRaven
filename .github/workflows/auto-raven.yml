@@ -13,7 +13,7 @@ on:
   workflow_dispatch:  # Manual trigger
 
 jobs:
-  auto-commit:
+  auto-raven:
     runs-on: ubuntu-latest
 
     steps:
