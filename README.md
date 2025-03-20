@@ -1,5 +1,5 @@
 # AutoRaven
-A GitHub repo by TahmidRaven that automates random commits; Each commit is logged in AutoRaven.md and commit_log.txt; 
+A GitHub repo by TahmidRaven that automates random commits; Each commit is logged in AutoRaven.md and commit_log.txt; <br />
 Useful for tracking automated activity, maintaining GitHub streaks, or testing workflows.
 ---
 
