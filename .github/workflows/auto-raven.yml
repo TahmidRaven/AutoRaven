@@ -1,0 +1,56 @@
+name: Auto Raven
+
+on:
+  schedule:
+    - cron: "0 0 * * *"  # Midnight UTC (6 AM Dhaka)
+    - cron: "15 3 * * *"  # 9:15 AM Dhaka
+    - cron: "30 6 * * *"  # 12:30 PM Dhaka
+    - cron: "45 9 * * *"  # 3:45 PM Dhaka
+    - cron: "0 12 * * *"  # 6:00 PM Dhaka
+    - cron: "20 15 * * *"  # 9:20 PM Dhaka
+    - cron: "40 18 * * *"  # 12:40 AM Dhaka
+    - cron: "55 21 * * *"  # 3:55 AM Dhaka
+  workflow_dispatch:  # Manual trigger
+
+jobs:
+  auto-commit:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set Up Git
+      run: |
+        git config --global user.name "TahmidRaven"
+        git config --global user.email "raven.of.the.endless@gmail.com"
+
+    - name: Ensure Files Exist
+      run: |
+        touch AutoRaven.md commit_log.txt  # Ensure both files exist
+
+    - name: Generate Random Commits
+      run: |
+        # Function to generate random commit times
+        generate_random_commits() {
+          num_commits=$((RANDOM % 5 + 4))  # Pick between 4 to 8 commits
+          echo "Generating $num_commits random commit times..." >> commit_log.txt
+          
+          for i in $(seq 1 $num_commits); do
+            # Generate a random time between 0 and 24 hours (86400 seconds)
+            sleep_time=$((RANDOM % 86400))  # Random seconds in 24 hours
+            echo "Sleeping for $sleep_time seconds..." >> commit_log.txt
+            sleep $sleep_time  # Wait until the random time
+            
+            DATE=$(TZ=Asia/Dhaka date +"%Y-%m-%d %H:%M:%S")
+            echo -e "\nAutomated commit at $DATE (Dhaka Time)" >> AutoRaven.md
+            echo "Commit at $DATE (Dhaka Time)" >> commit_log.txt  # Log commit time
+            
+            git add AutoRaven.md commit_log.txt
+            git commit -m "Automated commit at $DATE (Dhaka Time)" || exit 0
+            git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} main
+          done
+        }
+
+        # Call the function to generate random commits
+        generate_random_commits
