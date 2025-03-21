@@ -1,8 +1,7 @@
 ### **Repo Name**: `AutoRaven`  
 
 A GitHub repo by [TahmidRaven](https://github.com/TahmidRaven) that automates scheduled commits.<br />
-Each commit is logged in `AutoRaven.md`.<br />
-Useful for tracking automated activity, maintaining GitHub streaks, or testing workflows.
+Each commit is logged in `AutoRaven.md`. Useful for tracking automated activity, maintaining GitHub streaks, or testing workflows.
 ---
 
 #### **Description**:  
