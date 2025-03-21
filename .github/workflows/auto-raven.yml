@@ -5,7 +5,7 @@ on:
     - cron: "50 18 * * *"  # Runs at 00:50 Dhaka Time (18:50 UTC)
     - cron: "05 19 * * *"  # Runs at 00:05 Dhaka Time (18:50 UTC)
     - cron: "0 17 * * *"  # 11:00 PM Dhaka Time (17:00 UTC)
-    - cron: "45 16 * * *"  # 10:45 PM Dhaka Time (17:00 UTC)
+    - cron: "45 16 * * *"  # 10:45 PM Dhaka Time (16:45 UTC)
     - cron: "50 6 * * *"  # 12:30 PM Dhaka
     - cron: "45 9 * * *"  # 3:45 PM Dhaka
     - cron: "0 12 * * *"  # 6:00 PM Dhaka
