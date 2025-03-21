@@ -2,58 +2,48 @@ name: Auto Raven
 
 on:
   schedule:
-    - cron: "0 0 * * *"  # Midnight UTC (6 AM Dhaka)
-    - cron: "15 3 * * *"  # 9:15 AM Dhaka
-    - cron: "30 6 * * *"  # 12:30 PM Dhaka
+    - cron: "50 18 * * *"  # Runs at 00:50 Dhaka Time (18:50 UTC)
+    - cron: "05 19 * * *"  # Runs at 00:05 Dhaka Time (18:50 UTC)
+    - cron: "0 17 * * *"  # 11:00 PM Dhaka Time (17:00 UTC)
+    - cron: "45 16 * * *"  # 10:45 PM Dhaka Time (17:00 UTC)
+    - cron: "50 6 * * *"  # 12:30 PM Dhaka
     - cron: "45 9 * * *"  # 3:45 PM Dhaka
     - cron: "0 12 * * *"  # 6:00 PM Dhaka
-    - cron: "20 15 * * *"  # 9:20 PM Dhaka
-    - cron: "40 18 * * *"  # 12:40 AM Dhaka
-    - cron: "55 21 * * *"  # 3:55 AM Dhaka
-  workflow_dispatch:  # Manual trigger
+
+  workflow_dispatch:
 
 jobs:
   auto-raven:
     runs-on: ubuntu-latest
 
     steps:
+    # Check out the repository
     - name: Checkout repository
       uses: actions/checkout@v3
 
+    # Set up Git (configure name and email)
     - name: Set Up Git
       run: |
         git config --global user.name "TahmidRaven"
         git config --global user.email "raven.of.the.endless@gmail.com"
 
-    - name: Ensure Files Exist
+    # Write to AutoRaven.md
+    - name: Write to AutoRaven.md
       run: |
-        touch AutoRaven.md commit_log.txt  # Ensure both files exist
+        DATE=$(TZ=Asia/Dhaka date +"%Y-%m-%d %H:%M:%S")  # Get exact timestamp in Dhaka Time
+        echo -e "\nAutomated commit at $DATE (Dhaka Time)" >> AutoRaven.md  # Ensure newline before writing
+        git add AutoRaven.md  # Stage the change
 
-    - name: Pull latest changes
+
+    # Check the Git status and diff (for debugging)
+    - name: Check Git Status
       run: |
-        git fetch origin
-        git reset --hard origin/main
+        git status
+        git diff AutoRaven.md  # Check what has changed in the AutoRaven.md file
 
-    - name: Generate Random Commits
+    # Commit and Push
+    - name: Commit and Push
       run: |
-        generate_random_commits() {
-          num_commits=$((RANDOM % 5 + 4))  # Pick between 4 to 8 commits
-          echo "Generating $num_commits random commit times..." >> commit_log.txt
-          
-          for i in $(seq 1 $num_commits); do
-            sleep_time=$((RANDOM % 86400))  # Random seconds in 24 hours
-            echo "Sleeping for $sleep_time seconds..." >> commit_log.txt
-            sleep $sleep_time  # Wait until the random time
-            
-            DATE=$(TZ=Asia/Dhaka date +"%Y-%m-%d %H:%M:%S")
-            echo -e "\nAutomated commit at $DATE (Dhaka Time)" >> AutoRaven.md
-            echo "Commit at $DATE (Dhaka Time)" >> commit_log.txt  # Log commit time
-            
-            git add AutoRaven.md commit_log.txt
-            git commit -m "Automated commit at $DATE (Dhaka Time)" || exit 0
-            git pull --rebase origin main
-            git push --force-with-lease https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} main
-          done
-        }
-
-        generate_random_commits
+        DATE=$(TZ=Asia/Dhaka date +"%Y-%m-%d %H:%M:%S")  # Get exact timestamp in Dhaka Time
+        git commit -m "Automated commit at $DATE (Dhaka Time)" || exit 0  # Avoid error if no changes
+        git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} main
